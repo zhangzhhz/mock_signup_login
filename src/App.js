@@ -1,0 +1,80 @@
+import React, { useState, useEffect } from 'react';
+import { Link, withRouter } from "react-router-dom";
+import { Nav, Navbar, NavItem } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
+import Routes from './Routes';
+import './App.css';
+
+function App(props) {
+  const [isAuthenticated, userHasAuthenticated] = useState(false);
+  const [isAuthenticating, setIsAuthenticating] = useState(true);
+
+  useEffect(() => {
+    onLoad();
+  }, []);
+  
+  // The following will generate waring in browser console:
+  // useEffect(onLoad, []);
+  /* Warning: An effect function must not return anything besides a function, which is used for clean-up.
+
+     It looks like you wrote useEffect(async () => ...) or returned a Promise. Instead, write the async function inside your effect and call it immediately:
+  */
+  
+  async function onLoad() {
+    try {
+      userHasAuthenticated(1===0);
+    }
+    catch (e) {
+      if (e === 'No current user') {
+        console.log(e);
+      } else {
+        console.log(`onLoad part got error: ${JSON.stringify(e, null, 4)}`);
+      }
+    }
+    setIsAuthenticating(false);
+  }
+
+  async function handleLogout() {
+    try {
+      userHasAuthenticated(1===0);
+      console.log(`Logged out. Redirecting to login page...`);
+      props.history.push('/login');
+    }
+    catch (e) {
+      alert(JSON.stringify(e, null, 4));
+    }
+  }
+
+  return (
+    ! isAuthenticating &&
+    <div className="App container">
+      <Navbar fluid collapseOnSelect>
+        <Navbar.Header>
+          <Navbar.Brand>
+            <Link to="/">FM Run</Link>
+          </Navbar.Brand>
+          <Navbar.Toggle />
+        </Navbar.Header>
+        <Navbar.Collapse>
+          <Nav pullRight>
+            {isAuthenticated
+              // ? <LinkContainer to='/logout'><NavItem>Logout</NavItem></LinkContainer>
+              ? <NavItem onClick={handleLogout}>Logout</NavItem>
+              : <>
+                <LinkContainer to="/signup">
+                  <NavItem>Signup</NavItem>
+                </LinkContainer>
+                <LinkContainer to="/login">
+                  <NavItem>Login</NavItem>
+                </LinkContainer>
+              </>
+            }
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
+      <Routes appProps={{ isAuthenticated, userHasAuthenticated, isAuthenticating }} />
+    </div>
+  );
+}
+
+export default withRouter(App);
