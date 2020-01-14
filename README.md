@@ -1,3 +1,6 @@
+** Cribbed from the client side codes of the guide on [Serverless Stack](https://serverless-stack.com/). **
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
